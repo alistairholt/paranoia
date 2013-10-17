@@ -32,11 +32,11 @@ module Paranoia
 
   def delete
     return if new_record?
-    destroyed? ? destroy! : update_attribute_or_column(:deleted_at, Time.now)
+    destroyed? ? destroy! : update_attribute(:deleted_at, Time.now)
   end
 
   def restore!
-    update_attribute_or_column :deleted_at, nil
+    update_attribute :deleted_at, nil
   end
   alias :restore :restore!
 
@@ -45,15 +45,6 @@ module Paranoia
   end
 
   alias :deleted? :destroyed?
-
-  private
-
-  # Rails 3.1 adds update_column. Rails > 3.2.6 deprecates update_attribute, gone in Rails 4.
-  def update_attribute_or_column(*args)
-    self.class.unscoped do
-      respond_to?(:update_column) ? update_column(*args) : update_attribute(*args)
-    end
-  end
 end
 
 class ActiveRecord::Base
